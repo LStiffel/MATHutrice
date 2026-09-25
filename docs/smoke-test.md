@@ -4,28 +4,14 @@ Manual check that a fresh clone of `course-2026` runs, with no Entra credentials
 
 ## 1. Set up
 
-Requires [uv](https://docs.astral.sh/uv/). It installs the Python version in `.python-version` and the dependency versions in `uv.lock`.
-
-```sh
-git clone -b course-2026 <your fork URL> mathutrice
-cd mathutrice
-uv sync
-. .venv/bin/activate
-cp .env.example .env
-```
-
-If `uv sync` reports `No interpreter found for Python 3.14.7`, your uv predates that Python release: run `uv self update`, then `uv sync` again.
-
-Without uv, `pip install -e .` in a virtual environment running that Python version installs the project as well, from `pyproject.toml` rather than the lockfile.
-
-In `.env`, set `LLM_API_KEY` to the key for your LLM endpoint. The default endpoint is Mistral: get a key at <https://console.mistral.ai> (a free account works). Leave everything else as it is.
+Clone `course-2026` and set it up as described in [Run it locally](../README.md#run-it-locally), up to and including setting `LLM_API_KEY` in `.env`. Leave everything else in `.env` as it is.
 
 ## 2. Start
 
 From the repository root:
 
 ```sh
-uvicorn mathutrice.app:app --port 8000
+uv run uvicorn mathutrice.app:app --port 8000
 ```
 
 Expected: a `WARNING: AUTH_MODE=dev` line, then `Application startup complete`.
