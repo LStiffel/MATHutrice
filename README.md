@@ -29,6 +29,10 @@ uv run uvicorn mathutrice.app:app --port 8000
 
 Then open <http://localhost:8000/>.
 
+On an empty database, startup seeds the reference data (every notion and competence of the referentiel) and, with `AUTH_MODE=dev` only, one user per role: `etudiant@epfedu.fr` (Student), `enseignant@epf.fr` (Teacher) and `admin@epf.fr` (Admin). Under `entra`, no user is seeded, so that no guessable demo Admin exists in production. As soon as any notion or user exists, it seeds nothing.
+
+Run the tests with `uv run pytest`.
+
 To check that the clone works (startup, dev sign-in, LLM endpoint), follow the [smoke test](docs/smoke-test.md).
 
 ## Configuration

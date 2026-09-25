@@ -24,7 +24,7 @@ The application must refuse to start when a required setting is missing: with `L
 2. Sign in as a Student with an address ending in `@epfedu.fr`. You land on the home page.
 3. Open the chat and ask a question. The answer appears word by word (streaming).
 
-Modules and training need seeded notions, which a fresh database does not have yet (#20).
+On a fresh database, `/dev/login` already lists one seeded user per role, and the modules page lists the seeded notions.
 
 Step 3 calls the **LLM endpoint**. An `Erreur: ...` message in the chat means the endpoint, key or model in `.env` is wrong.
 

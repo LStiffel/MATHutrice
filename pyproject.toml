@@ -36,5 +36,9 @@ wheel-exclude = ["mathutrice/rag_documents"]
 
 [dependency-groups]
 dev = [
+    "pytest>=9.1.1",
     "tach~=0.35.0",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

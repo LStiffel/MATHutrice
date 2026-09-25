@@ -53,6 +53,12 @@ def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
 
 
+def seed_db():
+    with DBSession(engine) as session:
+        if seed_if_empty(session, REFERENTIEL, with_demo_users=AUTH_MODE == "dev"):
+            print("Base vide : données de départ insérées.")
+
+
 # ------------------------------------------------------------------
 # Cleanup — supprime conversations + messages de plus de 24h
 # ------------------------------------------------------------------
@@ -84,6 +90,7 @@ def cleanup_old_conversations():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     create_db_and_tables()
+    seed_db()
 
     scheduler = BackgroundScheduler()
     scheduler.add_job(cleanup_old_conversations, "interval", hours=1)
@@ -144,6 +151,7 @@ from mathutrice.fonctions_python.main import (  # noqa: E402
     REFERENTIEL,
     generate_mixed_test,
 )
+from mathutrice.fonctions_python.seed import seed_if_empty  # noqa: E402
 from mathutrice.fonctions_python.session_generator import (  # noqa: E402
     build_notion_data_with_scores,
     generate_next_question,
