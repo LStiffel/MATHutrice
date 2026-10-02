@@ -13,6 +13,8 @@ Résultats possibles pour chaque question :
 """
 
 import re
+
+from mathutrice.lacune_evaluation.LLM_as_Evaluator import _parse_json
 import logging
 from sympy import (
     sympify, simplify, trigsimp, cancel, cos, sin, tan, pi, sqrt, I,
