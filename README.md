@@ -116,6 +116,35 @@ The first call answers `303` with a `Set-Cookie: session=…`. `role` is
 user's name, or one derived from the address. Add `-d 'key=…'` when
 `DEV_LOGIN_KEY` is set.
 
+## How this fork is deployed
+
+This fork runs on two Azure App Service apps, on one Linux B1 plan in Italy
+North: **staging** (`lstiffel-mathutrice-staging`) and **production**
+(`lstiffel-mathutrice-production`). Both run the image built by
+[`Dockerfile`](Dockerfile), which starts `uvicorn mathutrice.app:app` on port
+8000, as a local run does: one process, whose startup creates the tables,
+inserts the reference data, and runs the hourly conversation cleanup.
+
+- **Staging, on green.** A push to `course-2026-fallback-ci` whose
+  `architecture` and `test` jobs pass runs `deploy to staging`
+  (`.github/workflows/architecture.yml`). It builds one image, tagged with the
+  commit, pushes it to `ghcr.io/lstiffel/mathutrice:<commit>`, deploys that tag,
+  and waits until the app answers with that commit in its `X-Revision` header.
+  A pull request or a red run deploys nothing.
+- **Settings.** Each deploy writes the app's settings through
+  `.github/actions/deploy-to-app-service`. Secrets (`DEV_LOGIN_KEY`,
+  `SESSION_SECRET`, `LLM_API_KEY`) come from the GitHub Environment of the
+  same name as the app's role, and nothing is committed. Both apps run with
+  `AUTH_MODE=dev`, behind their own `DEV_LOGIN_KEY`.
+- **Signing in to Azure.** The workflow logs in through OpenID Connect as the
+  `github-deploy` identity, which trusts only this fork's `staging` and
+  `production` environments and may only manage the apps of its resource group.
+
+**Known limit: the data is reset at every deploy and every restart.** The
+SQLite file lives on the container's own disk, since App Service's lasting
+storage is a network share on which SQLite cannot take its locks. It is
+created and seeded again at each start.
+
 ## Layout
 
 ```
