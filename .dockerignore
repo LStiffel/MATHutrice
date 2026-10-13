@@ -1,0 +1,14 @@
+# Never in the image: secrets, local state, and what the image builds itself.
+.env
+.venv
+.git
+.github
+.pytest_cache
+.vscode
+**/__pycache__
+*.db
+*.xlsx
+*.pdf
+mathutrice/rag_documents
+docs
+tests
