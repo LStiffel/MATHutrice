@@ -111,6 +111,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# The commit the image was built from (Dockerfile, `ARG REVISION`); "unknown"
+# outside an image.
+REVISION = os.getenv("REVISION", "unknown")
+
+
+@app.middleware("http")
+async def send_revision(request: Request, call_next):
+    """Say on every response which commit is running, so a deploy waits for
+    its own image to answer, not for the previous one still serving."""
+    response = await call_next(request)
+    response.headers["X-Revision"] = REVISION
+    return response
+
+
 SESSION_SECRET = os.getenv("SESSION_SECRET")
 
 if not SESSION_SECRET:
